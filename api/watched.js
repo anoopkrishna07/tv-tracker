@@ -5,22 +5,27 @@ const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB; // e.g., "tvtracker"
 const collectionName = 'watched_shows';  // Collection name
 
-const client = new MongoClient(uri);
+let client; // Store the client instance
+let collection; // Store the collection instance
+
+async function connectToDatabase() {
+  if (!client) { // Check if a client already exists
+    client = new MongoClient(uri);
+    try {
+      await client.connect();
+      console.log('Connected to MongoDB');
+      collection = client.db(dbName).collection(collectionName);
+    } catch (error) {
+      console.error('Failed to connect to MongoDB', error);
+      throw error;
+    }
+  }
+  return collection;
+}
 
 // Replace with your actual username and password (for demonstration only!)
 const ALLOWED_USERNAME = process.env.ALLOWED_USERNAME;
 const ALLOWED_PASSWORD = process.env.ALLOWED_PASSWORD;
-
-async function connectToDatabase() {
-    try {
-        await client.connect();
-        console.log('Connected to MongoDB');
-        return client.db(dbName).collection(collectionName);
-    } catch (error) {
-        console.error('Failed to connect to MongoDB', error);
-        throw error; // Propagate the error for handling in the handler function
-    }
-}
 
 // Authentication middleware
 function authenticate(req, res, next) {
@@ -72,7 +77,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Internal Server Error' });
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
-        console.log('MongoDB connection closed');
+        // await client.close();
+        // console.log('MongoDB connection closed');
     }
 }

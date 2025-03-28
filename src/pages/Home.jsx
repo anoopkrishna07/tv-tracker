@@ -23,6 +23,11 @@ const Home = () => {
             <Button variant="contained" color="secondary">Watched list</Button>
           </Link> to see what you've already watched.
         </Typography>
+        <Typography variant="body1" paragraph>
+          Go to your <Link to="/spanish" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" color="secondary">Spanish list</Button>
+          </Link> to see what you've already watched.
+        </Typography>
       </Paper>
     </Container>
   );

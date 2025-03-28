@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 
-const Watched = ({ watchedShows, onRemoveFromWatched }) => {
+const SpanishWatched = ({ watchedShows, onRemoveFromWatched }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const showsPerPage = 10;
 
@@ -30,7 +30,7 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
         <Container maxWidth="lg">
             <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
                 <Typography variant="h4" gutterBottom component="h1">
-                    Watched Shows
+                    Spanish Watched Shows
                 </Typography>
                 <WatchedList watchedShows={currentShows} onRemoveFromWatched={onRemoveFromWatched} />
                 <Stack alignItems="center" sx={{ mt: 2 }}>
@@ -47,4 +47,4 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
     );
 };
 
-export default Watched;
+export default SpanishWatched;

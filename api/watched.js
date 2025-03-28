@@ -48,11 +48,16 @@ function authenticate(req, res, next) {
 
 export default async function handler(req, res) {
     try {
-        const collection = await connectToDatabase();
+        const { language } = req.query;  // Get language parameter from query
+        console.log('language query: ', language)
 
         if (req.method === 'GET') {
-            // Fetch watched shows
-            const watchedShows = await collection.find({}).toArray();
+            let query = {};
+            if (language) {
+                query = { language: language };
+            }
+
+            const watchedShows = await collection.find(query).toArray();
             res.status(200).json(watchedShows);
         } else if (req.method === 'POST') {
             authenticate(req, res, async () => { // Apply authentication

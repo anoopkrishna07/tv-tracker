@@ -48,6 +48,7 @@ function authenticate(req, res, next) {
 
 export default async function handler(req, res) {
     try {
+        const collection = await connectToDatabase();
         const { language } = req.query;  // Get language parameter from query
         console.log('language query: ', language)
 

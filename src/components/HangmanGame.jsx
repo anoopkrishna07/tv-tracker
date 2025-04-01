@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Add useRef
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -14,6 +14,7 @@ const HangmanGame = ({ watchedShows }) => {
     const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'won', 'lost'
     const [message, setMessage] = useState('');
     const [userGuess, setUserGuess] = useState('');
+    const inputRef = useRef(null); // Create a ref
 
     useEffect(() => {
         if (watchedShows && watchedShows.length > 0) {
@@ -76,6 +77,25 @@ const HangmanGame = ({ watchedShows }) => {
         </Typography>
     ));
 
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleGuess();
+        }
+    };
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.addEventListener('keypress', handleKeyPress);
+        }
+
+        return () => {
+            if (inputRef.current) {
+                inputRef.current.removeEventListener('keypress', handleKeyPress);
+            }
+        };
+    }, [handleKeyPress]); // Include handleKeyPress in the dependency array
+
+
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
@@ -96,6 +116,7 @@ const HangmanGame = ({ watchedShows }) => {
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <TextField
+                                inputRef={inputRef} // Attach the ref
                                 label="Guess a letter"
                                 variant="outlined"
                                 size="small"

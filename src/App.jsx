@@ -4,12 +4,20 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import Watched from './pages/Watched';
 import SpanishWatched from './pages/SpanishWatched';
-import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -28,7 +36,11 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-    const [alertSeverity, setAlertSeverity] = useState('success'); // 'success' | 'info' | 'warning' | 'error'
+    const [alertSeverity, setAlertSeverity] = useState('success');
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         const fetchWatchedShows = async () => {
@@ -64,7 +76,6 @@ function App() {
     };
 
     const handleAuthSubmit = () => {
-        // Basic validation: Make sure username and password are not empty
         if (!username || !password) {
             alert("Please enter both a username and password.");
             return;
@@ -114,8 +125,8 @@ function App() {
 
             if (response.ok) {
                 const updatedShowsResponse = await fetch('/api/watched', { headers: { 'Authorization': authHeader } });
-                const updatedShowsData = await updatedShowsResponse.json();
                 const updatedSpanishShowsResponse = await fetch('/api/watched?language=es', { headers: { 'Authorization': authHeader } });
+                const updatedShowsData = await updatedShowsResponse.json();
                 const updatedSpanishShowsData = await updatedSpanishShowsResponse.json();
                 setWatchedShows(updatedShowsData);
                 setSpanishWatchedShows(updatedSpanishShowsData);
@@ -174,19 +185,76 @@ function App() {
         }
     };
 
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setDrawerOpen(open);
+    };
+
+    const navItems = [
+        { text: 'Home', path: '/' },
+        { text: 'Search', path: '/search' },
+        { text: 'Watched', path: '/watched' },
+        { text: 'Spanish', path: '/spanish' },
+    ];
+
+    const drawer = (
+        <Box
+            sx={{ width: 250 }}
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+        >
+            <List>
+                {navItems.map((item) => (
+                    <ListItem key={item.text} disablePadding>
+                        <ListItemButton component={Link} to={item.path}>
+                            <ListItemText primary={item.text} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Box>
+    );
+
     return (
         <Router>
             <AppBar position="static">
                 <Toolbar>
+                    {isMobile ? (
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
+                            onClick={toggleDrawer(true)}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    ) : null}
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         TV Show Tracker
                     </Typography>
-                    <Button color="inherit" component={Link} to="/">Home</Button>
-                    <Button color="inherit" component={Link} to="/search">Search</Button>
-                    <Button color="inherit" component={Link} to="/watched">Watched</Button>
-                    <Button color="inherit" component={Link} to="/spanish">Spanish</Button>
+                    {!isMobile ? (
+                        <>
+                            <Button color="inherit" component={Link} to="/">Home</Button>
+                            <Button color="inherit" component={Link} to="/search">Search</Button>
+                            <Button color="inherit" component={Link} to="/watched">Watched</Button>
+                            <Button color="inherit" component={Link} to="/spanish">Spanish</Button>
+                        </>
+                    ) : null}
                 </Toolbar>
             </AppBar>
+
+            <Drawer
+                anchor="left"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+            >
+                {drawer}
+            </Drawer>
 
             <Box sx={{ p: 3 }}>
                 <Routes>

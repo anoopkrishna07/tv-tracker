@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import Watched from './pages/Watched';
 import SpanishWatched from './pages/SpanishWatched';
+import HangmanPage from './pages/HangmanPage';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -197,6 +198,7 @@ function App() {
         { text: 'Search', path: '/search' },
         { text: 'Watched', path: '/watched' },
         { text: 'Spanish', path: '/spanish' },
+        { text: 'Hangman', path: '/hangman' },  // Add hangman to nav items
     ];
 
     const drawer = (
@@ -243,6 +245,7 @@ function App() {
                             <Button color="inherit" component={Link} to="/search">Search</Button>
                             <Button color="inherit" component={Link} to="/watched">Watched</Button>
                             <Button color="inherit" component={Link} to="/spanish">Spanish</Button>
+                            <Button color="inherit" component={Link} to="/hangman">Hangman</Button> {/* Add Hangman to nav */}
                         </>
                     ) : null}
                 </Toolbar>
@@ -262,6 +265,7 @@ function App() {
                     <Route path="/search" element={<Search onAddToWatched={addToWatched} />} />
                     <Route path="/watched" element={<Watched watchedShows={watchedShows} onRemoveFromWatched={removeFromWatched} />} />
                     <Route path="/spanish" element={<SpanishWatched watchedShows={spanishWatchedShows} onRemoveFromWatched={removeFromWatched} />} />
+                    <Route path="/hangman" element={<HangmanPage watchedShows={watchedShows} />} />{/* Add hangman route */}
                 </Routes>
             </Box>
 

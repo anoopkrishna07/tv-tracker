@@ -28,6 +28,11 @@ const Home = () => {
             <Button variant="contained" color="secondary">Spanish list</Button>
           </Link> to see what you've already watched.
         </Typography>
+        <Typography variant="body1" paragraph>
+         Play <Link to="/hangman" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" color="secondary">Hangman</Button>
+          </Link> here.
+        </Typography>
       </Paper>
     </Container>
   );

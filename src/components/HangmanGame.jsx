@@ -17,6 +17,7 @@ const HangmanGame = ({ watchedShows }) => {
     const [message, setMessage] = useState('');
     const [userGuess, setUserGuess] = useState('');
     const inputRef = useRef(null);
+    const [showTitle, setShowTitle] = useState('');
 
     const theme = useTheme(); // Get the theme object
     const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if it's a mobile screen (sm breakpoint or lower)
@@ -27,6 +28,7 @@ const HangmanGame = ({ watchedShows }) => {
             const selectedWord = watchedShows[randomIndex].name.toUpperCase();
             setWord(selectedWord);
             setGuessedLetters(Array(selectedWord.length).fill('_'));
+            setShowTitle(watchedShows[randomIndex].name);
         }
     }, [watchedShows]);
 
@@ -34,9 +36,9 @@ const HangmanGame = ({ watchedShows }) => {
         // Check if the player won
         if (guessedLetters.join('') === word) {
             setGameStatus('won');
-            setMessage('You won!');
+            setMessage(`You won! The show was: ${showTitle}`);
         }
-    }, [guessedLetters, word]);
+    }, [guessedLetters, word, showTitle]);
 
     const handleGuess = () => {
         if (!userGuess) return; // Prevent empty guesses
@@ -60,7 +62,7 @@ const HangmanGame = ({ watchedShows }) => {
                 setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
                 if (lives <= 1) {
                     setGameStatus('lost');
-                    setMessage(`You lost! The word was: ${word}`);
+                    setMessage(`You lost! The show was: ${showTitle}`);
                 }
             }
         }
@@ -75,6 +77,7 @@ const HangmanGame = ({ watchedShows }) => {
             setLives(3);
             setGameStatus('playing');
             setMessage('');
+            setShowTitle(watchedShows[randomIndex].name);
         }
     };
 

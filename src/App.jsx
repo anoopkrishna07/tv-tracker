@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import Watched from './pages/Watched';
 import SpanishWatched from './pages/SpanishWatched';
-import './App.css';
+import HangmanPage from './pages/HangmanPage';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';

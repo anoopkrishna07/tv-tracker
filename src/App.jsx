@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import Watched from './pages/Watched';
 import SpanishWatched from './pages/SpanishWatched';
-import HangmanPage from './pages/HangmanPage';
+import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -114,6 +114,14 @@ function App() {
             return;
         }
 
+        // Check for duplicates before adding
+        const isDuplicate = watchedShows.some((s) => s.id === show.id && s.language === language);
+
+        if (isDuplicate) {
+            showSnackbar('Show is already in the list!', 'warning');
+            return;
+        }
+
         try {
             const response = await fetch('/api/watched', {
                 method: 'POST',
@@ -198,7 +206,7 @@ function App() {
         { text: 'Search', path: '/search' },
         { text: 'Watched', path: '/watched' },
         { text: 'Spanish', path: '/spanish' },
-        { text: 'Hangman', path: '/hangman' },  // Add hangman to nav items
+        { text: 'Hangman', path: '/hangman' },
     ];
 
     const drawer = (
@@ -245,7 +253,7 @@ function App() {
                             <Button color="inherit" component={Link} to="/search">Search</Button>
                             <Button color="inherit" component={Link} to="/watched">Watched</Button>
                             <Button color="inherit" component={Link} to="/spanish">Spanish</Button>
-                            <Button color="inherit" component={Link} to="/hangman">Hangman</Button> {/* Add Hangman to nav */}
+                            <Button color="inherit" component={Link} to="/hangman">Hangman</Button>
                         </>
                     ) : null}
                 </Toolbar>
@@ -265,7 +273,7 @@ function App() {
                     <Route path="/search" element={<Search onAddToWatched={addToWatched} />} />
                     <Route path="/watched" element={<Watched watchedShows={watchedShows} onRemoveFromWatched={removeFromWatched} />} />
                     <Route path="/spanish" element={<SpanishWatched watchedShows={spanishWatchedShows} onRemoveFromWatched={removeFromWatched} />} />
-                    <Route path="/hangman" element={<HangmanPage watchedShows={watchedShows} />} />{/* Add hangman route */}
+                    <Route path="/hangman" element={<HangmanPage watchedShows={watchedShows} />} />
                 </Routes>
             </Box>
 

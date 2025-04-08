@@ -115,7 +115,7 @@ function App() {
         }
 
         // Check for duplicates before adding
-        const isDuplicate = watchedShows.some((s) => s.id === show.id && s.language === language);
+        const isDuplicate = watchedShows.some((s) => JSON.stringify(s) === JSON.stringify(show));
 
         if (isDuplicate) {
             showSnackbar('Show is already in the list!', 'warning');

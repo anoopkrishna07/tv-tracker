@@ -62,7 +62,14 @@ const Search = ({ onAddToWatched }) => {
                 <Typography variant="h4" gutterBottom component="h1" align="center"> {/* Center Title on Mobile */}
                     Search for Shows
                 </Typography>
-                <SearchBar onSearch={handleSearch} />
+                <Box sx={{
+                         width: '100%', // Take full width
+                         maxWidth: isMobile ? '100%' : 'md', //Adjust max width on desktop
+                         mx: 'auto', // Center horizontally
+                         mb: 2,
+                }}>
+                  <SearchBar onSearch={handleSearch} />
+                </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}> {/* Center Language Buttons */}
                     <Button variant="contained" onClick={() => setLanguage('en')} sx={{ mr: 1 }}> {/* Add spacing */}
                         English

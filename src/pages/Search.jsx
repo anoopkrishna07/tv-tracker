@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid2 from '@mui/material/Grid2';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import useMediaQuery from '@mui/material/useMediaQuery';

@@ -10,50 +10,66 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 const Watched = ({ watchedShows, onRemoveFromWatched }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const showsPerPage = 10;
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filteredShows, setFilteredShows] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1); // Current page number
+    const showsPerPage = 10; // Number of shows to display per page
+
+    const [searchTerm, setSearchTerm] = useState(''); // Search term
+    const [filteredShows, setFilteredShows] = useState([]); // Filtered shows based on search term
     const [searchActive, setSearchActive] = useState(false);
 
+    // This useEffect hook runs whenever watchedShows, searchTerm, or searchActive changes
     useEffect(() => {
-        if (searchTerm && searchActive) {
-            const filtered = watchedShows.filter(show =>
-                show.name.toUpperCase().includes(searchTerm.toUpperCase())
+        console.log('useEffect triggered'); // Log when useEffect is triggered
+
+        // Filter the shows based on the search term and whether a search is active
+
+        let filtered = [...watchedShows]; // Start with all shows
+
+        if (searchTerm && searchActive) { //If a search operation has started
+            console.log('Applying filter:', searchTerm); // Log the search term
+            filtered = watchedShows.filter(show =>  // Apply the filter
+                show.name.toUpperCase().includes(searchTerm.toUpperCase()) // Check if show name includes search term (case-insensitive)
             );
-            setFilteredShows(filtered);
-            setCurrentPage(1);
+            setCurrentPage(1); // Reset to page 1 when a new search is performed
         } else {
-            setFilteredShows([...watchedShows]);
+            console.log('No filter applied'); // Log when no filter is applied
             setCurrentPage(1);
         }
-        setSearchActive(false);
+
+        setFilteredShows(filtered); // Update the filteredShows state with the filtered results
+        console.log('filteredShows:', filtered); // Log the filteredShows array
+        setSearchActive(false); // Reset the searchActive state after filtering
     }, [watchedShows, searchTerm, searchActive]);
 
+    // Calculate the total number of shows after filtering
     const totalShows = filteredShows.length;
     const totalPages = Math.ceil(totalShows / showsPerPage);
 
+    // Calculate the index of the first and last show on the current page
     const indexOfLastShow = currentPage * showsPerPage;
     const indexOfFirstShow = indexOfLastShow - showsPerPage;
+
+    // Slice the filteredShows array to get the shows for the current page
     const currentShows = filteredShows.slice(indexOfFirstShow, indexOfLastShow);
+    console.log('currentShows:', currentShows); // Log the currentShows array
 
     const handlePageChange = (event, value) => {
-        setCurrentPage(value);
+        setCurrentPage(value); // Update the current page when the user clicks on a different page
     };
 
     const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+        setSearchTerm(event.target.value); // Update the search term as the user types
     };
 
     const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        setSearchActive(true);
+        event.preventDefault(); // Prevent form submission and page refresh
+        setSearchActive(true); // Set searchActive to true to trigger the filtering in the useEffect hook
     };
 
     const handleEnterKey = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault(); // Prevent form submission and page refresh
-            setSearchActive(true);
+            setSearchActive(true); // Set searchActive to true to trigger the filtering in the useEffect hook
         }
     };
 
@@ -63,6 +79,7 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
                 <Typography variant="h4" gutterBottom component="h1">
                     Watched Shows
                 </Typography>
+                {/* Search input and button */}
                 <Box component="form" onSubmit={handleSearchSubmit} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <TextField
                         label="Search Watched Shows"
@@ -77,7 +94,11 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
                         Search
                     </Button>
                 </Box>
+
+                {/* Watched list component displaying the current shows */}
                 <WatchedList watchedShows={currentShows} onRemoveFromWatched={onRemoveFromWatched} />
+
+                {/* Pagination component */}
                 <Stack alignItems="center" sx={{ mt: 2 }}>
                     <Pagination
                         count={totalPages}
@@ -85,7 +106,7 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
                         onChange={handlePageChange}
                         variant="outlined"
                         shape="rounded"
-                        disabled={totalShows <= showsPerPage}
+                        disabled={totalShows <= showsPerPage} //Disable if it's less than the page requirements.
                     />
                 </Stack>
             </Paper>

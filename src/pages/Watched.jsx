@@ -14,42 +14,28 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
     const showsPerPage = 10; // Number of shows to display per page
 
     const [searchTerm, setSearchTerm] = useState(''); // Search term
-    const [filteredShows, setFilteredShows] = useState([]); // Filtered shows based on search term
-    const [searchActive, setSearchActive] = useState(false);
+    const [filteredShows, setFilteredShows] = useState([...watchedShows]); // Initialize filteredShows with all shows
+    
 
-    // This useEffect hook runs whenever watchedShows, searchTerm, or searchActive changes
-    useEffect(() => {
-        console.log('useEffect triggered'); // Log when useEffect is triggered
-
-        // Filter the shows based on the search term and whether a search is active
-
-        let filtered = [...watchedShows]; // Start with all shows
-
-        if (searchTerm && searchActive) { //If a search operation has started
-            console.log('Applying filter:', searchTerm); // Log the search term
-            filtered = watchedShows.filter(show =>  // Apply the filter
-                show.name.toUpperCase().includes(searchTerm.toUpperCase()) // Check if show name includes search term (case-insensitive)
-            );
-            setCurrentPage(1); // Reset to page 1 when a new search is performed
-        } else {
-            console.log('No filter applied'); // Log when no filter is applied
-            setCurrentPage(1);
+    //Update showItems
+    const handleSearchSubmit = (event) => {
+        event.preventDefault(); // Prevent form submission and page refresh
+        // Perform filtering in this scope
+        let filtered = [...watchedShows];
+        if (searchTerm) {
+          filtered = watchedShows.filter(show =>
+              show.name.toUpperCase().includes(searchTerm.toUpperCase())
+          );
         }
+        setFilteredShows(filtered);
+        setCurrentPage(1);
+    };
 
-        setFilteredShows(filtered); // Update the filteredShows state with the filtered results
-        console.log('filteredShows:', filtered); // Log the filteredShows array
-        setSearchActive(false); // Reset the searchActive state after filtering
-    }, [watchedShows, searchTerm, searchActive]);
-
-    // Calculate the total number of shows after filtering
     const totalShows = filteredShows.length;
     const totalPages = Math.ceil(totalShows / showsPerPage);
 
-    // Calculate the index of the first and last show on the current page
     const indexOfLastShow = currentPage * showsPerPage;
     const indexOfFirstShow = indexOfLastShow - showsPerPage;
-
-    // Slice the filteredShows array to get the shows for the current page
     const currentShows = filteredShows.slice(indexOfFirstShow, indexOfLastShow);
     console.log('currentShows:', currentShows); // Log the currentShows array
 
@@ -61,17 +47,16 @@ const Watched = ({ watchedShows, onRemoveFromWatched }) => {
         setSearchTerm(event.target.value); // Update the search term as the user types
     };
 
-    const handleSearchSubmit = (event) => {
-        event.preventDefault(); // Prevent form submission and page refresh
-        setSearchActive(true); // Set searchActive to true to trigger the filtering in the useEffect hook
-    };
-
     const handleEnterKey = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault(); // Prevent form submission and page refresh
-            setSearchActive(true); // Set searchActive to true to trigger the filtering in the useEffect hook
+            handleSearchSubmit(event); //trigger same code in handleSearchSubmit instead
         }
     };
+
+    useEffect(() => {
+        // setFilteredShows([...watchedShows])
+    }, [watchedShows]);
 
     return (
         <Container maxWidth="lg">

@@ -1,5 +1,5 @@
 import React from 'react';
-import ShowCard from './ShowCard';
+import ShowCard1 from './ShowCard1';
 import Button from '@mui/material/Button'; // Import Material UI Button
 
 const WatchedList = ({ watchedShows, onRemoveFromWatched }) => {
@@ -9,7 +9,7 @@ const WatchedList = ({ watchedShows, onRemoveFromWatched }) => {
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {watchedShows.map((show) => (
                     <div key={show.id}>
-                        <ShowCard show={show} onAddToWatched={() => { }} />
+                        <ShowCard1 show={show} />
                         <Button variant="contained" color="error" onClick={() => onRemoveFromWatched(show.id)}>
                             Remove
                         </Button>

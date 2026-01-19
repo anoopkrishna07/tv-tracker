@@ -10,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import CardMedia from '@mui/material/CardMedia'; // Import CardMedia
 
-const HangmanGame = ({ selectedShow }) => {
+const HangmanGame = ({ selectedShow, onRestart }) => {
     const [word, setWord] = useState('');
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [lives, setLives] = useState(3);
@@ -26,17 +26,21 @@ const HangmanGame = ({ selectedShow }) => {
         if (selectedShow) {
             setWord(selectedShow.name.toUpperCase());
             setGuessedLetters(Array(selectedShow.name.length).fill('_'));
-            setLives(3)
+            setLives(3);
+            setGameStatus('playing');
+            setMessage('');
         }
     }, [selectedShow]);
 
     useEffect(() => {
         // Check if the player won
-        if (guessedLetters.join('') === word && word != "") {
+        if (guessedLetters.join('') === word && word !== "") {
             setGameStatus('won');
             setMessage(`You won! The show was: ${selectedShow.name}`);
+        } else if(lives <= 0){
+            setGameStatus('lost')
         }
-    }, [guessedLetters, word, selectedShow]);
+    }, [guessedLetters, word, selectedShow, lives]);
 
     const handleGuess = () => {
         if (!userGuess) return; // Prevent empty guesses
@@ -57,18 +61,18 @@ const HangmanGame = ({ selectedShow }) => {
         } else {
             if (guess !== ' ') {  //This way we do not deduct lives if a user gusses an empty space.
                 setLives(lives - 1);
-                setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
+                setMessage(`Incorrect guess! Lives remaining: ${lives}`);
                 if (lives <= 0) {
                     setGameStatus('lost');
-                    setMessage(`You lost! The show was: ${selectedShow.name}`);
                 }
             }
         }
     };
 
     const handleRestart = () => {
-            setLives(3)
-            setGameStatus('playing')
+            setLives(3);
+            setGameStatus('playing');
+            onRestart();
         };
 
     const displayWord = guessedLetters.map((letter, index) => (
@@ -130,7 +134,7 @@ const HangmanGame = ({ selectedShow }) => {
                         </Box>
                     </>
                 )}
-                {gameStatus !== 'playing' && selectedShow && (
+                {gameStatus !== 'playing' && (
                     <Box sx={{ textAlign: 'center' }}> {/* Center content */}
                         {gameStatus === 'won' && selectedShow.poster_path && ( /* Conditionally render image */
                             <CardMedia
@@ -146,9 +150,7 @@ const HangmanGame = ({ selectedShow }) => {
                         <Typography variant="h6" color={gameStatus === 'won' ? 'success.main' : 'error.main'}>
                             {message}
                         </Typography>
-                        <Button variant="contained" onClick={() => {
-                           handleRestart()
-                         }}>
+                        <Button variant="contained" onClick={handleRestart}>
                             Restart
                         </Button>
                     </Box>

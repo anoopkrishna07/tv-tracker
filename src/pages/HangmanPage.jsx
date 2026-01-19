@@ -16,19 +16,18 @@ const HangmanPage = ({ watchedShows }) => {
             setGameStarted(true);
         }
     };
-
     return (
         <Container maxWidth="md">
             <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
                 <Typography variant="h4" gutterBottom component="h1">
                     Hangman Game
                 </Typography>
-                {!gameStarted ? (
+                {!selectedShow ? (
                     <Button variant="contained" onClick={handleStartGame}>
                         Start Game
                     </Button>
                 ) : (
-                    <HangmanGame watchedShows={watchedShows} selectedShow={selectedShow} />
+                    <HangmanGame selectedShow={selectedShow} />
                 )}
             </Paper>
         </Container>

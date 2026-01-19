@@ -26,12 +26,13 @@ const HangmanGame = ({ selectedShow }) => {
         if (selectedShow) {
             setWord(selectedShow.name.toUpperCase());
             setGuessedLetters(Array(selectedShow.name.length).fill('_'));
+            setLives(3)
         }
     }, [selectedShow]);
 
     useEffect(() => {
         // Check if the player won
-        if (guessedLetters.join('') === word) {
+        if (guessedLetters.join('') === word && word != "") {
             setGameStatus('won');
             setMessage(`You won! The show was: ${selectedShow.name}`);
         }
@@ -57,7 +58,7 @@ const HangmanGame = ({ selectedShow }) => {
             if (guess !== ' ') {  //This way we do not deduct lives if a user gusses an empty space.
                 setLives(lives - 1);
                 setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
-                if (lives <= 1) {
+                if (lives <= 0) {
                     setGameStatus('lost');
                     setMessage(`You lost! The show was: ${selectedShow.name}`);
                 }
@@ -66,8 +67,9 @@ const HangmanGame = ({ selectedShow }) => {
     };
 
     const handleRestart = () => {
-
-    };
+            setLives(3)
+            setGameStatus('playing')
+        };
 
     const displayWord = guessedLetters.map((letter, index) => (
         <Typography key={index} variant={isMobile ? 'h5' : 'h4'} component="span" sx={{ mr: 1, fontSize: isMobile ? '1.2rem' : 'inherit' }}> {/* Scale down h4 if it's mobile */}
@@ -103,7 +105,7 @@ const HangmanGame = ({ selectedShow }) => {
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     Guess the TV Show Title!
                 </Typography>
-                {gameStatus === 'playing' && (
+                {selectedShow && gameStatus === 'playing' && (
                     <>
                         <Box sx={{ mb: 2, overflowX: 'auto' }}> {/* Make it scrollable on small screens */}
                             {displayWord}
@@ -128,7 +130,7 @@ const HangmanGame = ({ selectedShow }) => {
                         </Box>
                     </>
                 )}
-                {gameStatus !== 'playing' && (
+                {gameStatus !== 'playing' && selectedShow && (
                     <Box sx={{ textAlign: 'center' }}> {/* Center content */}
                         {gameStatus === 'won' && selectedShow.poster_path && ( /* Conditionally render image */
                             <CardMedia
@@ -145,8 +147,7 @@ const HangmanGame = ({ selectedShow }) => {
                             {message}
                         </Typography>
                         <Button variant="contained" onClick={() => {
-                            setLives(3)
-                            setGameStatus('playing')
+                           handleRestart()
                          }}>
                             Restart
                         </Button>

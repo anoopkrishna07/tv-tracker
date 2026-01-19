@@ -6,10 +6,11 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
-import useMediaQuery from '@mui/material/useMediaQuery'; // Import useMediaQuery
-import { useTheme } from '@mui/material/styles';  //Import UseTheme
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import CardMedia from '@mui/material/CardMedia'; // Import CardMedia
 
-const HangmanGame = ({ watchedShows }) => {
+const HangmanGame = ({ selectedShow }) => {
     const [word, setWord] = useState('');
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [lives, setLives] = useState(3);
@@ -17,28 +18,24 @@ const HangmanGame = ({ watchedShows }) => {
     const [message, setMessage] = useState('');
     const [userGuess, setUserGuess] = useState('');
     const inputRef = useRef(null);
-    const [showTitle, setShowTitle] = useState('');
 
     const theme = useTheme(); // Get the theme object
     const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if it's a mobile screen (sm breakpoint or lower)
 
     useEffect(() => {
-        if (watchedShows && watchedShows.length > 0) {
-            const randomIndex = Math.floor(Math.random() * watchedShows.length);
-            const selectedWord = watchedShows[randomIndex].name.toUpperCase();
-            setWord(selectedWord);
-            setGuessedLetters(Array(selectedWord.length).fill('_'));
-            setShowTitle(watchedShows[randomIndex].name);
+        if (selectedShow) {
+            setWord(selectedShow.name.toUpperCase());
+            setGuessedLetters(Array(selectedShow.name.length).fill('_'));
         }
-    }, [watchedShows]);
+    }, [selectedShow]);
 
     useEffect(() => {
         // Check if the player won
         if (guessedLetters.join('') === word) {
             setGameStatus('won');
-            setMessage(`You won! The show was: ${showTitle}`);
+            setMessage(`You won! The show was: ${selectedShow.name}`);
         }
-    }, [guessedLetters, word, showTitle]);
+    }, [guessedLetters, word, selectedShow]);
 
     const handleGuess = () => {
         if (!userGuess) return; // Prevent empty guesses
@@ -62,23 +59,14 @@ const HangmanGame = ({ watchedShows }) => {
                 setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
                 if (lives <= 1) {
                     setGameStatus('lost');
-                    setMessage(`You lost! The show was: ${showTitle}`);
+                    setMessage(`You lost! The show was: ${selectedShow.name}`);
                 }
             }
         }
     };
 
     const handleRestart = () => {
-        if (watchedShows && watchedShows.length > 0) {
-            const randomIndex = Math.floor(Math.random() * watchedShows.length);
-            const selectedWord = watchedShows[randomIndex].name.toUpperCase();
-            setWord(selectedWord);
-            setGuessedLetters(Array(selectedWord.length).fill('_'));
-            setLives(3);
-            setGameStatus('playing');
-            setMessage('');
-            setShowTitle(watchedShows[randomIndex].name);
-        }
+
     };
 
     const displayWord = guessedLetters.map((letter, index) => (
@@ -141,11 +129,25 @@ const HangmanGame = ({ watchedShows }) => {
                     </>
                 )}
                 {gameStatus !== 'playing' && (
-                    <Box>
+                    <Box sx={{ textAlign: 'center' }}> {/* Center content */}
+                        {gameStatus === 'won' && selectedShow.poster_path && ( /* Conditionally render image */
+                            <CardMedia
+                                component="img"
+                                image={`https://image.tmdb.org/t/p/w342${selectedShow.poster_path}`}
+                                alt={selectedShow.name}
+                                sx={{
+                                    maxWidth: '200px',
+                                    margin: '0 auto 16px',
+                                }}
+                            />
+                        )}
                         <Typography variant="h6" color={gameStatus === 'won' ? 'success.main' : 'error.main'}>
                             {message}
                         </Typography>
-                        <Button variant="contained" onClick={handleRestart}>
+                        <Button variant="contained" onClick={() => {
+                            setLives(3)
+                            setGameStatus('playing')
+                         }}>
                             Restart
                         </Button>
                     </Box>

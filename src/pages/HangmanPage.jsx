@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HangmanGame from '../components/HangmanGame';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -7,9 +7,14 @@ import Button from '@mui/material/Button';
 
 const HangmanPage = ({ watchedShows }) => {
     const [gameStarted, setGameStarted] = useState(false);
+    const [selectedShow, setSelectedShow] = useState(null);
 
     const handleStartGame = () => {
-        setGameStarted(true);
+        if (watchedShows && watchedShows.length > 0) {
+            const randomIndex = Math.floor(Math.random() * watchedShows.length);
+            setSelectedShow(watchedShows[randomIndex]);
+            setGameStarted(true);
+        }
     };
 
     return (
@@ -23,7 +28,7 @@ const HangmanPage = ({ watchedShows }) => {
                         Start Game
                     </Button>
                 ) : (
-                    <HangmanGame watchedShows={watchedShows} />
+                    <HangmanGame watchedShows={watchedShows} selectedShow={selectedShow} />
                 )}
             </Paper>
         </Container>

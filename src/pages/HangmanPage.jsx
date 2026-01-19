@@ -6,16 +6,22 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 
 const HangmanPage = ({ watchedShows }) => {
-    const [gameStarted, setGameStarted] = useState(false);
     const [selectedShow, setSelectedShow] = useState(null);
 
     const handleStartGame = () => {
         if (watchedShows && watchedShows.length > 0) {
             const randomIndex = Math.floor(Math.random() * watchedShows.length);
             setSelectedShow(watchedShows[randomIndex]);
-            setGameStarted(true);
         }
     };
+
+     const handleRestart = () => {
+        if (watchedShows && watchedShows.length > 0) {
+            const randomIndex = Math.floor(Math.random() * watchedShows.length);
+            setSelectedShow(watchedShows[randomIndex]);
+        }
+    };
+
     return (
         <Container maxWidth="md">
             <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
@@ -27,7 +33,7 @@ const HangmanPage = ({ watchedShows }) => {
                         Start Game
                     </Button>
                 ) : (
-                    <HangmanGame selectedShow={selectedShow} />
+                    <HangmanGame selectedShow={selectedShow}  onRestart={handleRestart} />
                 )}
             </Paper>
         </Container>

@@ -27,8 +27,8 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
             setWord(selectedShow.name.toUpperCase());
             setGuessedLetters(Array(selectedShow.name.length).fill('_'));
             setLives(3);
-            setGameStatus('playing');
-            setMessage('');
+             setGameStatus('playing');
+             setMessage('');
         }
     }, [selectedShow]);
 
@@ -38,7 +38,8 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
             setGameStatus('won');
             setMessage(`You won! The show was: ${selectedShow.name}`);
         } else if(lives <= 0){
-            setGameStatus('lost')
+            setGameStatus('lost');
+            setMessage(`You lost! The show was: ${selectedShow.name}`);
         }
     }, [guessedLetters, word, selectedShow, lives]);
 
@@ -61,7 +62,7 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
         } else {
             if (guess !== ' ') {  //This way we do not deduct lives if a user gusses an empty space.
                 setLives(lives - 1);
-                setMessage(`Incorrect guess! Lives remaining: ${lives}`);
+                setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
                 if (lives <= 0) {
                     setGameStatus('lost');
                 }
@@ -70,10 +71,8 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
     };
 
     const handleRestart = () => {
-            setLives(3);
-            setGameStatus('playing');
-            onRestart();
-        };
+        onRestart();
+    };
 
     const displayWord = guessedLetters.map((letter, index) => (
         <Typography key={index} variant={isMobile ? 'h5' : 'h4'} component="span" sx={{ mr: 1, fontSize: isMobile ? '1.2rem' : 'inherit' }}> {/* Scale down h4 if it's mobile */}
@@ -134,7 +133,7 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
                         </Box>
                     </>
                 )}
-                {gameStatus !== 'playing' && (
+                {gameStatus !== 'playing' &&  (
                     <Box sx={{ textAlign: 'center' }}> {/* Center content */}
                         {gameStatus === 'won' && selectedShow.poster_path && ( /* Conditionally render image */
                             <CardMedia
@@ -150,7 +149,7 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
                         <Typography variant="h6" color={gameStatus === 'won' ? 'success.main' : 'error.main'}>
                             {message}
                         </Typography>
-                        <Button variant="contained" onClick={handleRestart}>
+                        <Button variant="contained" onClick={() => handleRestart()}>
                             Restart
                         </Button>
                     </Box>

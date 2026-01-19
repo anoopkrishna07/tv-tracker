@@ -71,8 +71,9 @@ const HangmanGame = ({ selectedShow, onRestart }) => {
     };
 
     const handleRestart = () => {
-        onRestart();
-        setGameStatus('playing');
+         setGameStatus('playing');
+         onRestart();
+       
     };
 
     const displayWord = guessedLetters.map((letter, index) => (

@@ -7,13 +7,11 @@ import Button from '@mui/material/Button';
 
 const HangmanPage = ({ watchedShows }) => {
     const [selectedShow, setSelectedShow] = useState(null);
-     const [gameStatus, setGameStatus] = useState('initial'); // 'initial', 'playing', 'won', 'lost'
 
     const handleStartGame = () => {
         if (watchedShows && watchedShows.length > 0) {
             const randomIndex = Math.floor(Math.random() * watchedShows.length);
             setSelectedShow(watchedShows[randomIndex]);
-            setGameStatus('playing');
         }
     };
 
@@ -21,7 +19,6 @@ const HangmanPage = ({ watchedShows }) => {
         if (watchedShows && watchedShows.length > 0) {
             const randomIndex = Math.floor(Math.random() * watchedShows.length);
             setSelectedShow(watchedShows[randomIndex]);
-            setGameStatus('playing');
         }
     };
 
@@ -31,12 +28,12 @@ const HangmanPage = ({ watchedShows }) => {
                 <Typography variant="h4" gutterBottom component="h1">
                     Hangman Game
                 </Typography>
-                {gameStatus === 'initial'  ? (
+                {!selectedShow ? (
                     <Button variant="contained" onClick={handleStartGame}>
                         Start Game
                     </Button>
                 ) : (
-                    <HangmanGame selectedShow={selectedShow} gameStatus={gameStatus}  onRestart={handleRestart} />
+                    <HangmanGame selectedShow={selectedShow}  onRestart={handleRestart} />
                 )}
             </Paper>
         </Container>

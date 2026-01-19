@@ -10,10 +10,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import CardMedia from '@mui/material/CardMedia'; // Import CardMedia
 
-const HangmanGame = ({ selectedShow, onRestart, gameStatus }) => {
+const HangmanGame = ({ selectedShow, onRestart }) => {
     const [word, setWord] = useState('');
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [lives, setLives] = useState(3);
+    const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'won', 'lost'
     const [message, setMessage] = useState('');
     const [userGuess, setUserGuess] = useState('');
     const inputRef = useRef(null);
@@ -26,7 +27,7 @@ const HangmanGame = ({ selectedShow, onRestart, gameStatus }) => {
             setWord(selectedShow.name.toUpperCase());
             setGuessedLetters(Array(selectedShow.name.length).fill('_'));
             setLives(3);
-          //  setGameStatus('playing')
+             setGameStatus('playing');
              setMessage('');
         }
     }, [selectedShow]);
@@ -63,18 +64,16 @@ const HangmanGame = ({ selectedShow, onRestart, gameStatus }) => {
                 setLives(lives - 1);
                 setMessage(`Incorrect guess! Lives remaining: ${lives - 1}`);
                 if (lives <= 0) {
-                  //  setGameStatus('lost');
-                   setMessage(`You lost! The show was: ${selectedShow.name}`);
+                    setGameStatus('lost');
                 }
             }
         }
     };
 
     const handleRestart = () => {
-         //   setLives(3);
-        //    setGameStatus('playing')
-            onRestart();
-        };
+        onRestart();
+        setGameStatus('playing');
+    };
 
     const displayWord = guessedLetters.map((letter, index) => (
         <Typography key={index} variant={isMobile ? 'h5' : 'h4'} component="span" sx={{ mr: 1, fontSize: isMobile ? '1.2rem' : 'inherit' }}> {/* Scale down h4 if it's mobile */}
@@ -135,7 +134,7 @@ const HangmanGame = ({ selectedShow, onRestart, gameStatus }) => {
                         </Box>
                     </>
                 )}
-                {gameStatus !== 'playing' &&  selectedShow && (
+                {gameStatus !== 'playing' &&  (
                     <Box sx={{ textAlign: 'center' }}> {/* Center content */}
                         {gameStatus === 'won' && selectedShow.poster_path && ( /* Conditionally render image */
                             <CardMedia
